@@ -263,7 +263,7 @@ func (s *state) runTransaction(dg *dgo.Dgraph, buf *bytes.Buffer) error {
 	return nil
 }
 
-func (s *state) loop(dg *dgo.Dgraph, wg *sync.WaitGroup) {
+func (s *state) loop(dg *dgo.Dgraph, wg *sync.WaitGroup, int thread) {
 	defer wg.Done()
 	dur, err := time.ParseDuration(*dur)
 	if err != nil {
@@ -283,7 +283,7 @@ func (s *state) loop(dg *dgo.Dgraph, wg *sync.WaitGroup) {
 		buf.Reset()
 		err := s.runTransaction(dg, &buf)
 		if *verbose {
-			log.Printf("Final error: %v. %s", err, buf.String())
+			log.Printf("[Thread %d] Final error: %v. %s", thread, err, buf.String())
 		}
 		if err != nil {
 			atomic.AddInt32(&s.aborts, 1)
@@ -291,7 +291,7 @@ func (s *state) loop(dg *dgo.Dgraph, wg *sync.WaitGroup) {
 			r := atomic.AddInt32(&s.runs, 1)
 			if r%100 == 0 {
 				a := atomic.LoadInt32(&s.aborts)
-				fmt.Printf("Runs: %d. Aborts: %d\n", r, a)
+				fmt.Printf("[Thread %d] Runs: %d. Aborts: %d\n", thread, r, a)
 			}
 			if time.Now().After(end) {
 				return
@@ -328,7 +328,7 @@ func main() {
 	for i := 0; i < *conc; i++ {
 		for _, dg := range clients {
 			wg.Add(1)
-			go s.loop(dg, &wg)
+			go s.loop(dg, &wg, i)
 		}
 	}
 	wg.Wait()
