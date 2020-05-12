@@ -215,6 +215,8 @@ func (s *state) runTransaction(dg *dgo.Dgraph, buf *bytes.Buffer) error {
 	if src.Bal-amount <= 0 {
 		amount = src.Bal
 	}
+	start_time := txn.GetStartTs
+	fmt.Fprintf(w, "Transaction start: %v\n", start_time)
 	fmt.Fprintf(w, "Moving [$%d, K_%02d -> K_%02d]. Src:%+v. Dst: %+v\n",
 		amount, src.Key, dst.Key, src, dst)
 	src.Bal -= amount
@@ -263,7 +265,7 @@ func (s *state) runTransaction(dg *dgo.Dgraph, buf *bytes.Buffer) error {
 	return nil
 }
 
-func (s *state) loop(dg *dgo.Dgraph, wg *sync.WaitGroup, int thread) {
+func (s *state) loop(dg *dgo.Dgraph, wg *sync.WaitGroup, thread int) {
 	defer wg.Done()
 	dur, err := time.ParseDuration(*dur)
 	if err != nil {
