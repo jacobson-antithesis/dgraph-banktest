@@ -216,7 +216,7 @@ func (s *state) runTransaction(dg *dgo.Dgraph, buf *bytes.Buffer) error {
 		amount = src.Bal
 	}
 	start_time := txn.GetStartTs
-	fmt.Fprintf(w, "Transaction start: %v\n", start_time)
+	fmt.Fprintf(w, "Transaction start: %d\n", start_time)
 	fmt.Fprintf(w, "Moving [$%d, K_%02d -> K_%02d]. Src:%+v. Dst: %+v\n",
 		amount, src.Key, dst.Key, src, dst)
 	src.Bal -= amount
