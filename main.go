@@ -66,9 +66,9 @@ func (s *state) createAccounts(dg *dgo.Dgraph) {
 
 	op.DropAll = false
 	op.Schema = `
-	key: int @index(int) @upsert .
+	key: int @index(int) .
 	bal: int .
-	typ: string @index(exact) @upsert .
+	typ: string @index(exact) .
 	`
 	x.Check(dg.Alter(context.Background(), &op))
 
