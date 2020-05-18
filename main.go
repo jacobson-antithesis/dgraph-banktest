@@ -308,6 +308,8 @@ func main() {
 	all := strings.Split(*alpha, ",")
 	x.AssertTrue(len(all) > 0)
 
+	fmt.Printf("Running Antithesis modified version of dgraph banktest.")
+
 	var clients []*dgo.Dgraph
 	for _, one := range all {
 		conn, err := grpc.Dial(one, grpc.WithInsecure())
